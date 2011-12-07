@@ -8,12 +8,17 @@ var Config = {
   port: '5984',
   lastResult: '/test_results/last_test_result',
   jobDocument: '/test_results/test_runner_job',
-  testRunnerWorld: 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/tests.xhtml',
-  browserExe: 'chromium-browser'
+  browserExe: 'chromium-browser',
+  browserArgs: ['--display', ':1', 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/tests.xhtml'],
+  xServerExe: 'Xvfb',
+  xServerArgs: [':1'],
+  interval: 3000 // Polling interval
 };
 
-var interval = 3000;
-var testId = 12345;
+// --------------------------------
+
+var interval = Config.interval;
+var testId = 12345;                    // TODO generate unique value
 var reqOptions = {
   host: 'localhost',
   port: '5984',
@@ -67,9 +72,23 @@ function createTestRunnerJob(testId, modules) {
   req.end();
 }
 
-// TODO start browser and make it run tests
+function spawnTestEnvironment() {
+  var xServer = spawn(Config.xServerExe, Config.xServerArgs);
+  var browser;
+  setTimeout(function() {
+    browser = spawn(Config.browserExe, Config.browserArgs);
+  }, Config.interval);
+  return { browser: browser, xServer: xServer };
+}
+
+function killTestEnvironment(environment) {
+  if (environment.browser) { environment.browser.kill('SIGKILL') }
+  if (environment.xServer) { environment.xServer.kill('SIGKILL') }
+}
+
+// main
 
 createTestRunnerJob(testId, 'all');
 requestResults();
-spawn(Config.browserExe, [Config.testRunnerWorld]);
-
+var environment = spawnTestEnvironment();
+// .... killTestEnvironment? process.exit takes care of it?
