@@ -2,12 +2,19 @@
 
 var http = require('http');
 
+var Config = {
+  host: 'localhost',
+  port: '5984',
+  lastResult: '/test_results/last_test_result',
+  jobDocument: '/test_results/test_runner_job'
+};
+
 var interval = 3000;
 var testId = 12345;
 var reqOptions = {
   host: 'localhost',
   port: '5984',
-  path: '/test_results/last_test_result' 
+  path: Config.lastResult 
 };
 
 function reportResults(report) {
@@ -45,7 +52,19 @@ function onGetResults(arg) {
   }
 }
 
+function createTestRunnerJob(testId, modules) {
+  var job = { testId: testId, modules: modules };
+  var options = { 
+    host: Config.host, 
+    port: Config.port, 
+    path: Config.jobDocument, 
+    method: 'PUT' };
+  var req = http.request(options, function() {});
+  req.write(JSON.stringify(job));
+  req.end();
+}
+
 // TODO start browser and make it run tests
 
+createTestRunnerJob(testId, 'all');
 requestResults();
-//process.exit(0)
