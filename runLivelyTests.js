@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 
 var http = require('http');
+var spawn = require('child_process').spawn;
 
 var Config = {
   host: 'localhost',
   port: '5984',
   lastResult: '/test_results/last_test_result',
-  jobDocument: '/test_results/test_runner_job'
+  jobDocument: '/test_results/test_runner_job',
+  testRunnerWorld: 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/tests.xhtml',
+  browserExe: 'chromium-browser'
 };
 
 var interval = 3000;
@@ -68,3 +71,5 @@ function createTestRunnerJob(testId, modules) {
 
 createTestRunnerJob(testId, 'all');
 requestResults();
+spawn(Config.browserExe, [Config.testRunnerWorld]);
+
