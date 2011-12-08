@@ -3,27 +3,22 @@
 var http = require('http');
 var spawn = require('child_process').spawn;
 
-var Config = {
-  host: 'localhost',
-  port: '5984',
-  lastResult: '/test_results/last_test_result',
-  jobDocument: '/test_results/test_runner_job',
-  browserExe: 'chromium-browser',
-  browserArgs: ['--display', ':1', 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/tests.xhtml'],
-  xServerExe: 'Xvfb',
-  xServerArgs: [':1'],
-  interval: 3000 // Polling interval
-};
+var Config = require('./config');
 
 // --------------------------------
 
 var interval = Config.interval;
-var testId = 12345;                    // TODO generate unique value
-var reqOptions = {
-  host: 'localhost',
-  port: '5984',
-  path: Config.lastResult 
-};
+var testId = 12345; //Math.floor(Math.random());
+
+function getAndDo(reqOptions, callback) {
+  http.get(reqOptions, function(res) {
+    var data = "";
+    res.on('data', function (chunk) {
+      data += chunk; });
+    res.on('end', function(){
+      callback(data); });
+  });
+}
 
 function reportResults(report) {
   console.log('Run: ' + report.testsRun);
@@ -38,13 +33,12 @@ function reportResults(report) {
 }
 
 function requestResults() {
-  http.get(reqOptions, function(res) {
-    var data = "";
-    res.on('data', function (chunk) {
-      data += chunk; });
-    res.on('end', function(){
-      onGetResults(data); });
-  });
+  var reqOptions = {
+    host: Config.host,
+    port: Config.port,
+    path: Config.lastResult 
+  };
+  getAndDo(reqOptions, onGetResults);
 }
 
 function onGetResults(arg) {
@@ -61,15 +55,17 @@ function onGetResults(arg) {
 }
 
 function createTestRunnerJob(testId, modules) {
+  // For now, we use curl to put job info into CouchDB
   var job = { testId: testId, modules: modules };
-  var options = { 
-    host: Config.host, 
-    port: Config.port, 
-    path: Config.jobDocument, 
-    method: 'PUT' };
-  var req = http.request(options, function() {});
-  req.write(JSON.stringify(job));
-  req.end();
+  var curlArgs = [
+    '--digest', 
+    '--user', 
+    Config.couchDB.user, 
+    'http://' + Config.couchDB.host + ':' + Config.couchDB.port + '/' + 
+      Config.couchDB.dbName + '/' + Config.couchDB.jobDocument,
+    '-d',
+    '\'' + JSON.stringify(job) + '\''];
+  spawn(Config.curlExe, curlArgs);
 }
 
 function spawnTestEnvironment() {
@@ -88,7 +84,8 @@ function killTestEnvironment(environment) {
 
 // main
 
+console.log('testId: ' + testId);
 createTestRunnerJob(testId, 'all');
-requestResults();
-var environment = spawnTestEnvironment();
+//requestResults();
+//var environment = spawnTestEnvironment();
 // .... killTestEnvironment? process.exit takes care of it?
