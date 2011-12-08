@@ -5,6 +5,7 @@ import json
 import subprocess
 import time
 import urllib2
+import random
 
 config = config.Config
 
@@ -42,11 +43,19 @@ def httpGet(url):
 # ----
 
 def putNewTestJob(testId):
-  pass
+  jobUrl = 'http://' + config.couchHost + '/' + \
+           config.couchDb + '/' + config.couchJobDocument
+  job = json.loads(httpGet(jobUrl))
+  job['testId'] = testId
+  job['modules'] = config.testModules
+  httpPut(jobUrl, json.dumps(job))
 
 # ----- main
 
 if __name__ == '__main__':
+  testId = random.randint(1000, 10000)
+  print testId
+  putNewTestJob(testId)
   #env = spawnTestEnvironment()
   #time.sleep(10)  
   #killTestEnvironment(env)
