@@ -1,8 +1,7 @@
 Lively CI scripts
 =================
 
-runLivelyTests.js:
-Node.js script that, once completed, will open a web browser and have it run test suites. TestRunner will write results to a CouchDB document. runLivelyTests keeps polling CouchDB for test results to show up and report them to Jenkins.
+Script that, once completed, will open a web browser and have it run test suites. TestRunner will write results to a CouchDB document. It keeps polling CouchDB for test results to show up and report them to Jenkins.
 
 Prerequisites:
 - Scriptable TestRunner
