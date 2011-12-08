@@ -1,0 +1,15 @@
+class Config:
+  pass
+
+Config.browserCmd = ['chromium-browser', '--display', ':1', 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/tests.xhtml']
+Config.xCmd = ['Xnest', ':1'] #['Xvfb', ':1']
+Config.curlExe = 'curl'
+Config.couchHost = 'www.lively-kernel.org'
+Config.couchPort = 80
+Config.couchUser = 'jenkins'
+Config.couchPass = ''
+Config.couchDb = 'couchdb/test_results'
+Config.couchLatestResult = 'latest_test_results'
+Config.couchJobDocument = 'test_runner_job'
+Config.pollInterval = 3
+Config.testModules = 'all'
