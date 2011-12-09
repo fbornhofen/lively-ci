@@ -51,11 +51,11 @@ def putNewTestJob(testId):
   job['modules'] = config.testModules
   httpPut(jobUrl, json.dumps(job))
 
-def collectTestResults(testId):
+def collectTestResults(testId, timeout):
   resultsUrl = 'http://' + config.couchHost + '/' + \
                config.couchDb + '/' + config.couchLatestResult
   results = json.loads(httpGet(resultsUrl))
-  while results['testId'] != testId:
+  while (int(time.time()) < timeout) and (results['testId'] != testId):
     time.sleep(config.pollInterval)
     results = json.loads(httpGet(resultsUrl))
   return results
@@ -72,11 +72,12 @@ def reportResults(results):
 # ----- main
 
 if __name__ == '__main__':
+  startTime = int(time.time())
   testId = random.randint(1000, 10000)
   print testId
   putNewTestJob(testId)
   env = spawnTestEnvironment()
-  results = collectTestResults(testId)
+  results = collectTestResults(testId, startTime + Config.timeout)
   exitCode = reportResults(results)
   killTestEnvironment(env)
   sys.exit(exitCode)
