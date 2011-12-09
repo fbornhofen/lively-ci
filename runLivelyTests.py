@@ -6,6 +6,7 @@ import subprocess
 import time
 import urllib2
 import random
+import sys
 
 config = config.Config
 
@@ -59,8 +60,14 @@ def collectTestResults(testId):
     results = json.loads(httpGet(resultsUrl))
   return results
 
-def reportResultsAndQuit(results):
-  print json.dumps(results)
+def reportResults(results):
+  print 'Tests run: ' + str(results['testsRun'])
+  print 'Tests passed: ' + str(results['testsPassed'])
+  print 'Tests failed: ' + str(results['testsFailed'])
+  print 'message: ' + str(results['message'])
+  if (results['testsFailed'] > 0):
+    return -1
+  return 0
 
 # ----- main
 
@@ -68,10 +75,10 @@ if __name__ == '__main__':
   testId = random.randint(1000, 10000)
   print testId
   putNewTestJob(testId)
+  env = spawnTestEnvironment()
   results = collectTestResults(testId)
-  reportResultsAndQuit(results)
-  #env = spawnTestEnvironment()
-  #time.sleep(10)  
-  #killTestEnvironment(env)
+  exitCode = reportResults(results)
+  killTestEnvironment(env)
+  sys.exit(exitCode)
 
 

@@ -2,7 +2,7 @@ class Config:
   pass
 
 Config.browserCmd = ['chromium-browser', '--display', ':1', 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/tests.xhtml']
-Config.xCmd = ['Xnest', ':1'] #['Xvfb', ':1']
+Config.xCmd = ['Xvfb', ':1']
 Config.curlExe = 'curl'
 Config.couchHost = 'www.lively-kernel.org'
 Config.couchPort = 80
