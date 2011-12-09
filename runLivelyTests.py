@@ -55,7 +55,9 @@ def collectTestResults(testId, timeout):
   resultsUrl = 'http://' + config.couchHost + '/' + \
                config.couchDb + '/' + config.couchLatestResult
   results = json.loads(httpGet(resultsUrl))
-  while (int(time.time()) < timeout) and (results['testId'] != testId):
+  while results['testId'] != testId:
+    if int(time.time()) > timeout:
+      return None 
     time.sleep(config.pollInterval)
     results = json.loads(httpGet(resultsUrl))
   return results
@@ -78,6 +80,9 @@ if __name__ == '__main__':
   putNewTestJob(testId)
   env = spawnTestEnvironment()
   results = collectTestResults(testId, startTime + Config.timeout)
+  if results == None:
+    print "Test timed out after " + str(Config.timeout) + "s"
+    sys.exit(-2)
   exitCode = reportResults(results)
   killTestEnvironment(env)
   sys.exit(exitCode)
