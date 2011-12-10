@@ -7,6 +7,7 @@ import time
 import urllib2
 import random
 import sys
+import getopt
 
 config = config.Config
 
@@ -71,9 +72,16 @@ def reportResults(results):
     return -1
   return 0
 
+def parseCommandLineOptions():
+  opts, args = getopt.getopt(sys.argv[1:], "b:", ["browser="])
+  for o, a in opts:
+    if o in ("-b", "--browser"):
+      config.browserCmd[0] = a
+
 # ----- main
 
 if __name__ == '__main__':
+  parseCommandLineOptions()
   startTime = int(time.time())
   testId = random.randint(1000, 10000)
   print testId
