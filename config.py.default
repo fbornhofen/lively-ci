@@ -13,3 +13,4 @@ Config.couchLatestResult = 'last_test_result'
 Config.couchJobDocument = 'test_runner_job'
 Config.pollInterval = 3
 Config.testModules = 'all'
+Config.timeout = 3000

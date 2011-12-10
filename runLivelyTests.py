@@ -80,10 +80,12 @@ if __name__ == '__main__':
   putNewTestJob(testId)
   env = spawnTestEnvironment()
   results = collectTestResults(testId, startTime + config.timeout)
+  exitCode = 0
   if results == None:
     print "Test timed out after " + str(config.timeout) + "s"
-    sys.exit(-2)
-  exitCode = reportResults(results)
+    exitCode = -2
+  else 
+    exitCode = reportResults(results)
   killTestEnvironment(env)
   sys.exit(exitCode)
 
