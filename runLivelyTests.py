@@ -84,7 +84,7 @@ if __name__ == '__main__':
   if results == None:
     print "Test timed out after " + str(config.timeout) + "s"
     exitCode = -2
-  else 
+  else:
     exitCode = reportResults(results)
   killTestEnvironment(env)
   sys.exit(exitCode)
