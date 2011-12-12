@@ -73,12 +73,16 @@ def reportResults(results):
   return 0
 
 def parseCommandLineOptions():
-  opts, args = getopt.getopt(sys.argv[1:], "b:m:", ["browser=", "modules="])
+  opts, args = getopt.getopt(sys.argv[1:], "b:m:x:d:", ["browser=", "modules=", "xserver=", "display="])
   for o, a in opts:
     if o in ("-b", "--browser"):
       config.browserCmd[0] = a
     elif o in ("-m", "--modules"):
       config.testModules = json.loads(a)
+    elif o in ("-x", "--xserver"):
+      config.xCmd[0] = a
+    elif o in ("-d", "--display"):
+      config.xCmd[1] = a
 
 # ----- main
 
