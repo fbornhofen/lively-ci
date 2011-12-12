@@ -1,16 +1,17 @@
 class Config:
   pass
 
-Config.browserCmd = ['chromium-browser', '--display', ':1', 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/autoTests.xhtml']
+Config.browserCmd = ['google-chrome', '--display', ':1', 'http://lively-kernel.org/repository/webwerkstatt/users/fbo/autoTests.xhtml']
 Config.xCmd = ['Xvfb', ':1']
 Config.curlExe = 'curl'
-Config.couchHost = 'www.lively-kernel.org'
+Config.couchHost = ''                       # <-------
 Config.couchPort = 80
 Config.couchUser = 'jenkins'
-Config.couchPass = '' # <--------
-Config.couchDb = 'couchdb/test_results'
+Config.couchPass = ''                       # <--------
+Config.couchDb = 'test_results'
 Config.couchLatestResult = 'last_test_result'
 Config.couchJobDocument = 'test_runner_job'
 Config.pollInterval = 3
-Config.testModules = 'all'
-Config.timeout = 3000
+Config.testModules = ["lively.morphic.Tests", "lively.bindings.Tests", "lively.bindings.GeometryBindingsTest", "Tests.ClassTest", "Tests.MiniPrototypeTest", "Tests.ModuleSystemTests", "Tests.OmetaTest", "Tests.TestFrameworkTests", "lively.persistence.Tests", "lively.AST.Tests"]
+Config.timeout = 300
+
