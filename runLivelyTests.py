@@ -67,7 +67,11 @@ def reportResults(results):
   print 'Tests run: ' + str(results['testsRun'])
   print 'Tests passed: ' + str(results['testsPassed'])
   print 'Tests failed: ' + str(results['testsFailed'])
-  print 'message: ' + str(results['message'])
+  #print json.dumps(results['failed'], indent=4, sort_keys=True)
+  for failed in results['failed']:
+    print failed['classname'] + ">>" + failed['selector']
+    print failed['err']['message']
+    print ''
   if (results['testsFailed'] > 0):
     return -1
   return 0
