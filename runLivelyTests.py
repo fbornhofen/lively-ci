@@ -70,7 +70,10 @@ def reportResults(results):
   #print json.dumps(results['failed'], indent=4, sort_keys=True)
   for failed in results['failed']:
     print failed['classname'] + ">>" + failed['selector']
-    print failed['err']['message']
+    if failed.has_key('message'):
+      print failed['err']['message']
+    elif failed.has_key('stack'):
+      print failed['err']['stack']
     print ''
   if (results['testsFailed'] > 0):
     return -1
