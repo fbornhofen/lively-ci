@@ -72,7 +72,7 @@ def reportResults(results):
     print failed['classname'] + ">>" + failed['selector']
     if failed['err'].has_key('message'):
       print failed['err']['message']
-    elif failed.has_key('stack'):
+    elif failed['err'].has_key('stack'):
       print failed['err']['stack']
     print ''
   if (results['testsFailed'] > 0):
